@@ -1,0 +1,25 @@
+{
+  "name": "Componentes ESETP 703",
+  "short_name": "Componentes",
+  "lang": "es",
+  "description": "Precios, kits y calculadora de pedido de componentes electrónicos.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fafaf8",
+  "theme_color": "#1f5f8b",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Componentes ESETP 703</title>
+<meta name="description" content="Lista de precios, kits y calculadora de pedido de componentes electrónicos de la ESETP 703.">
+<meta name="theme-color" content="#1f5f8b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>Componentes ESETP 703</h1>
+  <p id="actualizado" class="mut">Cargando…</p>
+  <div id="busqueda"><input id="q" type="search" placeholder="Buscar componente o kit" aria-label="Buscar" autocomplete="off"></div>
+</header>
+<main id="main"><noscript>Esta página necesita JavaScript.</noscript></main>
+<nav aria-label="Secciones">
+  <a id="tab-precios" href="#precios">Precios</a>
+  <a id="tab-kits" href="#kits">Kits</a>
+  <a id="tab-pedido" href="#pedido">Mi pedido<span id="n-pedido"></span></a>
+</nav>
+<script src="calculo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
