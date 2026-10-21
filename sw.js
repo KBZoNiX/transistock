@@ -1,5 +1,5 @@
-// Service worker: la app abre sin conexión. cedb0d82c3 cambia en cada publicación y renueva la caché.
-var VERSION = "cedb0d82c3";
+// Service worker: la app abre sin conexión. 6b3e8a34e5 cambia en cada publicación y renueva la caché.
+var VERSION = "6b3e8a34e5";
 var CACHE = "elestock-" + VERSION;
 var ARCHIVOS = ["./", "index.html", "app.js", "calculo.js", "style.css", "manifest.webmanifest", "icon-192.png", "data.json"];
 
