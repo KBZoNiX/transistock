@@ -6,6 +6,16 @@ var Calculo = (function () {
   function cantidad(n) {
     return String(Math.round(n * 100) / 100).replace(".", ",");
   }
+  // Renglón del contenido de un kit: «2 × BC547»; una parte de algo entero, como fracción: «1/4 de Placa…».
+  function renglonKit(q, nombre) {
+    if (q > 0 && q < 1) {
+      for (var d = 2; d <= 10; d++) {
+        var num = Math.round(q * d);
+        if (num > 0 && Math.abs(q * d - num) < 1e-9) return num + "/" + d + " de " + nombre;
+      }
+    }
+    return cantidad(q) + " × " + nombre;
+  }
   function clave(l) { return l.t + ":" + l.id; }
   // pedido: [{t:'c'|'k', id, n, p, q}]; devuelve un pedido nuevo
   function cambiar(pedido, item, delta) {
@@ -120,7 +130,7 @@ var Calculo = (function () {
     for (var i = 0; i < partes.length; i++) if (t.indexOf(partes[i]) < 0) return false;
     return true;
   }
-  return { dinero: dinero, cantidad: cantidad, cambiar: cambiar, fijar: fijar, cantidadDe: cantidadDe,
+  return { dinero: dinero, cantidad: cantidad, renglonKit: renglonKit, cambiar: cambiar, fijar: fijar, cantidadDe: cantidadDe,
            total: total, texto: texto, coincide: coincide, actualizar: actualizar,
            valor: valor, ordenar: ordenar };
 })();

@@ -88,7 +88,7 @@
       if (k.a !== anio) { anio = k.a; main.appendChild(h("h2", {}, anio ? anio + "° año" : "Otros")); }
       var item = { t: "k", id: k.id, n: "Kit " + k.n, p: k.p };
       var detalle = h("ul", { class: "items" });
-      k.i.forEach(function (i) { detalle.appendChild(h("li", {}, C.cantidad(i.q) + " × " + i.n)); });
+      k.i.forEach(function (i) { detalle.appendChild(h("li", {}, C.renglonKit(i.q, i.n))); });
       main.appendChild(h("details", { class: "kit" },
         h("summary", {}, h("span", { class: "nombre" }, k.n, h("small", {}, k.i.length + " componentes · tocá para ver")),
           h("span", { class: "precio" }, C.dinero(k.p)), ico("abajo")),
@@ -153,6 +153,7 @@
     limpiar.addEventListener("click", function () { q.value = busqueda = ""; limpiar.hidden = true; dibujar(); q.focus(); });
     window.addEventListener("hashchange", leerVista);
     fetch("data.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (d) {
+      d.componentes = C.ordenar(d.componentes, d);  // dentro de cada categoría, por tipo y valor (10K después de 2K2)
       datos = d;
       pedido = C.actualizar(pedido, d);
       guardarPedido();
