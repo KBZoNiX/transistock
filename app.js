@@ -106,14 +106,14 @@
   function vistaPedido(main) {
     main.appendChild(h("h2", {}, "Mi pedido"));
     if (!pedido.length) { vacio(main, "pedido", "Todavía no agregaste nada. Tocá + en Precios o en Kits."); return; }
-    var lista = h("ul", { class: "lista" });
-    pedido.forEach(function (l) {
+    var lista = h("ul", { class: "lista" }), ordenado = C.ordenar(pedido, datos);
+    ordenado.forEach(function (l) {
       lista.appendChild(h("li", {}, h("span", { class: "nombre" }, l.n, h("small", {}, C.dinero(l.p) + " c/u")),
         h("span", { class: "precio" }, C.dinero(l.p * l.q)), botonesCantidad(l)));
     });
     main.appendChild(lista);
     var aviso = h("span", { class: "aviso", role: "status" });
-    var txt = C.texto(pedido);
+    var txt = C.texto(ordenado);
     main.appendChild(h("p", { class: "total" }, "Total", h("b", {}, C.dinero(C.total(pedido)))));
     main.appendChild(h("div", { class: "acciones" },
       h("a", { class: "boton wa", href: "https://wa.me/?text=" + encodeURIComponent(txt), target: "_blank", rel: "noopener" }, ico("whatsapp"), "Enviar por WhatsApp"),

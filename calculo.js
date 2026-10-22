@@ -63,6 +63,54 @@ var Calculo = (function () {
     }
     return out;
   }
+  // Valor eléctrico de un nombre, en unidades base: «2K2» -> 2200, «470R» -> 470, «4,7pF» -> 4.7e-12, «100uF 16V» -> 1e-4.
+  // Toma el primer número que empieza una palabra (así «LM358» o «1N4007» no tienen valor), y sólo de la variante:
+  // en «Capacitores electrolíticos <= 100uF — Cap. electro 1uF» el valor es 1uF.
+  var MULT = { p: 1e-12, n: 1e-9, u: 1e-6, "µ": 1e-6, m: 1e-3, R: 1, k: 1e3, K: 1e3, M: 1e6 };
+  var RE_VALOR = /(?:^|[\s\/(—-])(\d+(?:[.,]\d+)?)\s?([pnuµmRkKM]?)(\d*)\s?(?:F|Ω|W|V|A|H|mm)?(?=$|[\s\/,)])/;
+  function valor(nombre) {
+    var partes = nombre.split(" — "), m = RE_VALOR.exec(partes[partes.length - 1]);
+    if (!m) return null;
+    var cifras = m[1].replace(",", ".") + (m[3] ? (m[1].indexOf(",") < 0 && m[1].indexOf(".") < 0 ? "." : "") + m[3] : "");
+    return parseFloat(cifras) * (m[2] ? MULT[m[2]] : 1);
+  }
+  // Clase de componente: primeras letras del nombre de la variante («Capacitores cerámicos — Cap. cerámico 10pF» -> «cap»).
+  function clase(nombre) {
+    var partes = nombre.split(" — ");
+    return plano(partes[partes.length - 1]).replace(/[^a-z0-9 ]/g, "").trim().slice(0, 3);
+  }
+  // Comparación «natural»: los números se comparan como números (DIP8 < DIP14).
+  function natural(a, b) {
+    var x = plano(a).match(/\d+|\D+/g) || [], y = plano(b).match(/\d+|\D+/g) || [];
+    for (var i = 0; i < Math.min(x.length, y.length); i++) {
+      if (x[i] === y[i]) continue;
+      var nx = /^\d/.test(x[i]), ny = /^\d/.test(y[i]);
+      if (nx && ny) return parseInt(x[i], 10) - parseInt(y[i], 10);
+      return x[i] < y[i] ? -1 : 1;
+    }
+    return x.length - y.length;
+  }
+  // Pedido para mostrar y copiar: kits primero; después los componentes por categoría (en el orden de la
+  // lista de precios), por clase y por valor; los que no tienen valor van al final de su clase, por nombre.
+  function ordenar(pedido, datos) {
+    var cat = {}, rango = {};
+    datos.componentes.forEach(function (c) {
+      cat[c.id] = c.c;
+      if (!(c.c in rango)) rango[c.c] = Object.keys(rango).length;
+    });
+    function clave(l) {
+      var c = l.t === "k" ? -1 : (l.id in cat ? rango[cat[l.id]] : 1e9);
+      return { c: c, k: l.t === "k" ? "" : clase(l.n), v: l.t === "k" ? null : valor(l.n), n: l.n };
+    }
+    return pedido.map(function (l) { return { l: l, k: clave(l) }; }).sort(function (a, b) {
+      var x = a.k, y = b.k;
+      if (x.c !== y.c) return x.c - y.c;
+      if (x.k !== y.k) return x.k < y.k ? -1 : 1;
+      if ((x.v === null) !== (y.v === null)) return x.v === null ? 1 : -1;
+      if (x.v !== null && x.v !== y.v) return x.v - y.v;
+      return natural(x.n, y.n);
+    }).map(function (e) { return e.l; });
+  }
   // normaliza para buscar: sin acentos y en minúsculas
   function plano(s) {
     return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -73,6 +121,7 @@ var Calculo = (function () {
     return true;
   }
   return { dinero: dinero, cantidad: cantidad, cambiar: cambiar, fijar: fijar, cantidadDe: cantidadDe,
-           total: total, texto: texto, coincide: coincide, actualizar: actualizar };
+           total: total, texto: texto, coincide: coincide, actualizar: actualizar,
+           valor: valor, ordenar: ordenar };
 })();
 if (typeof module !== "undefined") module.exports = Calculo;
