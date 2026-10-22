@@ -1,5 +1,5 @@
-// Service worker: la app abre sin conexión. 55c9d88e67 cambia en cada publicación y renueva la caché.
-var VERSION = "55c9d88e67";
+// Service worker: la app abre sin conexión. 2b2568dd8b cambia en cada publicación y renueva la caché.
+var VERSION = "2b2568dd8b";
 var CACHE = "transistock-" + VERSION;
 var ARCHIVOS = ["./", "index.html", "app.js", "calculo.js", "style.css", "marca.css", "iconos.svg", "manifest.webmanifest", "data.json",
   "isotipo-azul.svg", "favicon.svg", "favicon-32.png", "icon-192.png",

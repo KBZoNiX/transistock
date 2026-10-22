@@ -35,14 +35,14 @@ var Calculo = (function () {
     for (var i = 0; i < pedido.length; i++) s += pedido[i].p * pedido[i].q;
     return s;
   }
-  function texto(pedido, actualizado) {
-    var l = ["Pedido de componentes – ESETP 703"];
+  function texto(pedido) {
+    var l = ["Pedido de componentes - transistock"];
     for (var i = 0; i < pedido.length; i++) {
       var x = pedido[i];
       l.push(cantidad(x.q) + " × " + x.n + " – " + dinero(x.p * x.q));
     }
     l.push("TOTAL: " + dinero(total(pedido)));
-    l.push("(precios al " + actualizado + ", sujetos a cambio)");
+    l.push("(precios orientativos - a confirmar)");
     return l.join("\n");
   }
   // normaliza para buscar: sin acentos y en minúsculas
