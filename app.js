@@ -130,13 +130,9 @@
     document.getElementById("busqueda").hidden = vista === "pedido";
     document.getElementById("categorias").hidden = vista !== "precios";
     if (vista === "precios") { dibujarCategorias(); vistaPrecios(main); } else if (vista === "kits") vistaKits(main); else vistaPedido(main);
-    var n = pedido.length, globo = document.getElementById("n-pedido"), resumen = document.getElementById("resumen");
+    var n = pedido.length, globo = document.getElementById("n-pedido");
     globo.textContent = n;
     globo.hidden = !n;
-    resumen.hidden = !n || vista === "pedido";
-    document.body.classList.toggle("con-resumen", !resumen.hidden);
-    resumen.textContent = "";
-    if (n) resumen.append(ico("pedido"), n === 1 ? "1 ítem en tu pedido" : n + " ítems en tu pedido", h("b", {}, C.dinero(C.total(pedido))));
     ["precios", "kits", "pedido"].forEach(function (v) {
       var a = document.getElementById("tab-" + v);
       a.setAttribute("aria-current", v === vista ? "page" : "false");

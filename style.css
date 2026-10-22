@@ -3,8 +3,7 @@
 html { -webkit-text-size-adjust:100%; }
 body { margin:0; background:var(--fondo); color:var(--fg); font:16px/1.4 var(--f-datos); -webkit-font-smoothing:antialiased;
   padding-bottom:calc(4.25rem + env(safe-area-inset-bottom)); }
-body.con-resumen { padding-bottom:calc(8rem + env(safe-area-inset-bottom)); }
-h2, button, .chip, .tabs, .resumen, .total, summary { font-family:var(--f-ui); font-weight:500; }
+h2, button, .chip, .tabs, .total, summary { font-family:var(--f-ui); font-weight:500; }
 :focus-visible { outline:2px solid var(--azul); outline-offset:2px; }
 .ancho, main, .actualizado { max-width:44rem; margin-left:auto; margin-right:auto; }
 
@@ -79,12 +78,7 @@ details.kit .items li { margin:.2rem 0; }
 .copia summary { color:var(--mut); font-size:.88rem; padding:.4rem 0; }
 textarea { width:100%; font:.85rem/1.4 var(--f-datos); padding:.6rem; border:1px solid var(--linea); border-radius:10px; background:var(--card); color:var(--fg); }
 
-/* ---------- resumen flotante y navegación inferior ---------- */
-.resumen { position:fixed; left:.75rem; right:.75rem; bottom:calc(4.6rem + env(safe-area-inset-bottom)); z-index:9; max-width:42rem; margin:0 auto;
-  display:flex; align-items:center; gap:.6rem; padding:.75rem 1rem; border-radius:14px; background:var(--tinta); color:var(--card); text-decoration:none;
-  box-shadow:0 6px 20px rgba(0,0,0,.25); font-size:.92rem; }
-.resumen b { margin-left:auto; font-weight:500; font-variant-numeric:tabular-nums; }
-.resumen[hidden] { display:none; }
+/* ---------- navegación inferior ---------- */
 .tabs { position:fixed; bottom:0; left:0; right:0; z-index:10; display:flex; background:var(--card); border-top:1px solid var(--linea);
   padding-bottom:env(safe-area-inset-bottom); box-shadow:0 -2px 10px rgba(16,24,40,.06); }
 .tabs a { flex:1; display:flex; flex-direction:column; align-items:center; gap:.2rem; padding:.55rem .25rem .6rem; color:var(--mut); text-decoration:none; font-size:.75rem; }
@@ -98,4 +92,4 @@ textarea { width:100%; font:.85rem/1.4 var(--f-datos); padding:.6rem; border:1px
 
 @media (min-width:46rem) { .barra { border-radius:0; } }
 @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
-@media print { .tabs, .resumen, .buscar, .chips, button, .acciones { display:none !important; } .barra { position:static; box-shadow:none; } body { padding:0; } }
+@media print { .tabs, .buscar, .chips, button, .acciones { display:none !important; } .barra { position:static; box-shadow:none; } body { padding:0; } }
