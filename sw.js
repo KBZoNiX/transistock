@@ -1,14 +1,18 @@
-// Service worker: la app abre sin conexión. 6b3e8a34e5 cambia en cada publicación y renueva la caché.
-var VERSION = "6b3e8a34e5";
-var CACHE = "elestock-" + VERSION;
-var ARCHIVOS = ["./", "index.html", "app.js", "calculo.js", "style.css", "manifest.webmanifest", "icon-192.png", "data.json"];
+// Service worker: la app abre sin conexión. 0532bb92d4 cambia en cada publicación y renueva la caché.
+var VERSION = "0532bb92d4";
+var CACHE = "transistock-" + VERSION;
+var ARCHIVOS = ["./", "index.html", "app.js", "calculo.js", "style.css", "marca.css", "iconos.svg", "manifest.webmanifest", "data.json",
+  "isotipo-azul.svg", "favicon.svg", "favicon-32.png", "icon-192.png",
+  "fuentes/montserrat-latin-600-normal.woff2", "fuentes/inter-latin-500-normal.woff2", "fuentes/roboto-latin-400-normal.woff2"];
 
 self.addEventListener("install", function (e) {
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(ARCHIVOS); }).then(function () { return self.skipWaiting(); }));
 });
 self.addEventListener("activate", function (e) {
   e.waitUntil(caches.keys().then(function (ks) {
-    return Promise.all(ks.filter(function (k) { return k.indexOf("elestock-") === 0 && k !== CACHE; }).map(function (k) { return caches.delete(k); }));
+    // también borra las cachés de cuando la app se llamaba Elestock
+    return Promise.all(ks.filter(function (k) { return (k.indexOf("transistock-") === 0 || k.indexOf("elestock-") === 0) && k !== CACHE; })
+      .map(function (k) { return caches.delete(k); }));
   }).then(function () { return self.clients.claim(); }));
 });
 self.addEventListener("fetch", function (e) {

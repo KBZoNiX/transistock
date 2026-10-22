@@ -2,26 +2,40 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Componentes ESETP 703</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>transistock · Componentes ESETP 703</title>
 <meta name="description" content="Lista de precios, kits y calculadora de pedido de componentes electrónicos de la ESETP 703.">
-<meta name="theme-color" content="#1f5f8b">
+<meta name="theme-color" content="#0073E6">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icon-192.png">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preload" href="fuentes/inter-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="marca.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>Componentes ESETP 703</h1>
-  <p id="actualizado" class="mut">Cargando…</p>
-  <div id="busqueda"><input id="q" type="search" placeholder="Buscar componente o kit" aria-label="Buscar" autocomplete="off"></div>
+<header class="barra sobre-azul">
+  <div class="fila">
+    <img src="isotipo-azul.svg" alt="" width="36" height="36">
+    <div class="titulo"><h1 class="logotipo">transi<b>stock</b></h1><p>Componentes ESETP 703</p></div>
+  </div>
+  <div id="busqueda" class="buscar">
+    <svg class="ico" aria-hidden="true"><use href="iconos.svg#i-buscar"/></svg>
+    <input id="q" type="search" placeholder="Buscar componente o kit" aria-label="Buscar" autocomplete="off">
+    <button id="limpiar" type="button" class="limpiar" aria-label="Borrar búsqueda" hidden><svg class="ico" aria-hidden="true"><use href="iconos.svg#i-cerrar"/></svg></button>
+  </div>
 </header>
-<main id="main"><noscript>Esta página necesita JavaScript.</noscript></main>
-<nav aria-label="Secciones">
-  <a id="tab-precios" href="#precios">Precios</a>
-  <a id="tab-kits" href="#kits">Kits</a>
-  <a id="tab-pedido" href="#pedido">Mi pedido<span id="n-pedido"></span></a>
+<p id="actualizado" class="actualizado">Cargando precios…</p>
+<nav id="categorias" class="chips" aria-label="Categorías" hidden></nav>
+<main id="main" aria-live="polite"><noscript>Esta página necesita JavaScript.</noscript>
+  <ul class="lista esqueleto" aria-hidden="true"><li></li><li></li><li></li><li></li><li></li><li></li></ul>
+</main>
+<a id="resumen" class="resumen" href="#pedido" hidden></a>
+<nav class="tabs" aria-label="Secciones">
+  <a id="tab-precios" href="#precios"><svg class="ico" aria-hidden="true"><use href="iconos.svg#i-precio"/></svg>Precios</a>
+  <a id="tab-kits" href="#kits"><svg class="ico" aria-hidden="true"><use href="iconos.svg#i-kit"/></svg>Kits</a>
+  <a id="tab-pedido" href="#pedido"><span class="con-globo"><svg class="ico" aria-hidden="true"><use href="iconos.svg#i-pedido"/></svg><span id="n-pedido" class="globo" hidden></span></span>Mi pedido</a>
 </nav>
 <script src="calculo.js"></script>
 <script src="app.js"></script>

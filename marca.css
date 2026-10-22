@@ -1,0 +1,38 @@
+/* Identidad de transistock: tipografías y colores. La usan la app local y la PWA (se copia al publicar). */
+@font-face { font-family:"Montserrat"; font-weight:600; font-style:normal; font-display:swap; src:url(fuentes/montserrat-latin-600-normal.woff2) format("woff2"); }
+@font-face { font-family:"Inter"; font-weight:500; font-style:normal; font-display:swap; src:url(fuentes/inter-latin-500-normal.woff2) format("woff2"); }
+@font-face { font-family:"Roboto"; font-weight:400; font-style:normal; font-display:swap; src:url(fuentes/roboto-latin-400-normal.woff2) format("woff2"); }
+
+:root {
+  /* paleta de marca */
+  --azul:#0080FF; --rojo:#E51A1A; --gris:#4D4D4D; --blanco:#FFFFFF;
+  /* derivados: el azul de marca con texto blanco no llega a 4,5:1, así que barras y botones usan uno apenas más oscuro */
+  --azul-fuerte:#0073E6; --azul-hover:#0062C4; --azul-texto:#0066CC; --azul-suave:#E6F2FF;
+  --rojo-texto:#D01616; --rojo-suave:#FDECEC;
+  --fondo:#F3F5F8; --card:#FFFFFF; --linea:#E1E5EB; --linea-fuerte:#C9CFD8;
+  --tinta:#23272C; --fg:#4D4D4D; --mut:#6B7077;
+  --ok:#1E7B34; --ok-suave:#E7F4EA; --poco:#9A5800; --poco-suave:#FFF3DF; --ago:var(--rojo-texto); --ago-suave:var(--rojo-suave);
+  --sombra:0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+  --radio:10px;
+  --f-marca:"Montserrat", system-ui, sans-serif;
+  --f-ui:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-datos:"Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --azul-fuerte:#0A5CB8; --azul-hover:#0D6BD4; --azul-texto:#6CB4FF; --azul-suave:#14304F;
+    --rojo-texto:#FF7070; --rojo-suave:#3A1A1C;
+    --fondo:#121417; --card:#1B1E23; --linea:#2C3138; --linea-fuerte:#3C434C;
+    --tinta:#F1F3F5; --fg:#D7DBE0; --mut:#9AA1A9;
+    --ok:#6FD08A; --ok-suave:#173222; --poco:#F2B34E; --poco-suave:#3A2C12;
+    --sombra:0 1px 2px rgba(0,0,0,.4);
+    color-scheme: dark;
+  }
+}
+
+/* logotipo: «transi» gris y «stock» rojo sobre fondo claro; todo blanco sobre la barra azul */
+.logotipo { font-family:var(--f-marca); font-weight:600; letter-spacing:-.01em; color:var(--gris); white-space:nowrap; }
+.logotipo b { font-weight:600; color:var(--rojo); }
+.sobre-azul .logotipo, .sobre-azul .logotipo b { color:#fff; }
+.ico { width:1.15em; height:1.15em; flex:none; vertical-align:-.2em; }

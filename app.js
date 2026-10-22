@@ -1,7 +1,7 @@
 (function () {
   "use strict";
-  var C = Calculo, datos = null, pedido = [], vista = "precios", busqueda = "";
-  var CLAVE = "elestock-pedido";
+  var C = Calculo, datos = null, pedido = [], vista = "precios", busqueda = "", categoria = "";
+  var CLAVE = "transistock-pedido", CLAVE_VIEJA = "elestock-pedido";  // la app se llamaba Elestock
 
   function h(tag, attrs) {
     var el = document.createElement(tag);
@@ -17,8 +17,24 @@
     }
     return el;
   }
+  function ico(nombre) {
+    var ns = "http://www.w3.org/2000/svg", s = document.createElementNS(ns, "svg"), u = document.createElementNS(ns, "use");
+    s.setAttribute("class", "ico");
+    s.setAttribute("aria-hidden", "true");
+    u.setAttribute("href", "iconos.svg#i-" + nombre);
+    s.appendChild(u);
+    return s;
+  }
   function cargarPedido() {
-    try { pedido = JSON.parse(localStorage.getItem(CLAVE) || "[]"); } catch (e) { pedido = []; }
+    try {
+      var guardado = localStorage.getItem(CLAVE);
+      if (guardado === null && localStorage.getItem(CLAVE_VIEJA) !== null) {  // pedido armado antes del cambio de nombre
+        guardado = localStorage.getItem(CLAVE_VIEJA);
+        localStorage.setItem(CLAVE, guardado);
+        localStorage.removeItem(CLAVE_VIEJA);
+      }
+      pedido = JSON.parse(guardado || "[]");
+    } catch (e) { pedido = []; }
   }
   function guardarPedido() {
     try { localStorage.setItem(CLAVE, JSON.stringify(pedido)); } catch (e) { /* sin almacenamiento: sigue en memoria */ }
@@ -27,16 +43,29 @@
 
   function botonesCantidad(item) {
     var q = C.cantidadDe(pedido, item);
-    if (!q) return h("button", { class: "mas", "aria-label": "Agregar " + item.n, onclick: function () { mover(item, 1); } }, "+");
+    if (!q) return h("button", { class: "mas", "aria-label": "Agregar " + item.n, onclick: function () { mover(item, 1); } }, ico("mas"));
     return h("span", { class: "cant" },
-      h("button", { "aria-label": "Quitar uno de " + item.n, onclick: function () { mover(item, -1); } }, "−"),
-      h("b", {}, C.cantidad(q)),
-      h("button", { "aria-label": "Agregar otro " + item.n, onclick: function () { mover(item, 1); } }, "+"));
+      h("button", { "aria-label": "Quitar uno de " + item.n, onclick: function () { mover(item, -1); } }, ico(q === 1 ? "borrar" : "menos")),
+      h("b", { "aria-label": "Cantidad" }, C.cantidad(q)),
+      h("button", { "aria-label": "Agregar otro " + item.n, onclick: function () { mover(item, 1); } }, ico("mas")));
+  }
+  function vacio(main, icono, texto) { main.appendChild(h("div", { class: "vacio" }, ico(icono), h("p", {}, texto))); }
+
+  function dibujarCategorias() {
+    var nav = document.getElementById("categorias"), vistas = {};
+    nav.textContent = "";
+    function chip(valor, texto) {
+      nav.appendChild(h("button", { type: "button", class: "chip", "aria-pressed": String(categoria === valor),
+        onclick: function () { categoria = valor; dibujar(); window.scrollTo(0, 0); } }, texto));
+    }
+    chip("", "Todo");
+    datos.componentes.forEach(function (c) { if (!vistas[c.c]) { vistas[c.c] = true; chip(c.c, c.c); } });
   }
 
   function vistaPrecios(main) {
     var cat = null, lista = null, n = 0;
     datos.componentes.forEach(function (c) {
+      if (categoria && c.c !== categoria) return;
       if (!C.coincide(c.n + " " + c.c, busqueda)) return;
       n++;
       if (c.c !== cat) {
@@ -48,7 +77,7 @@
       var item = { t: "c", id: c.id, n: c.n, p: c.p };
       lista.appendChild(h("li", {}, h("span", { class: "nombre" }, c.n), h("span", { class: "precio" }, C.dinero(c.p)), botonesCantidad(item)));
     });
-    if (!n) main.appendChild(h("p", { class: "vacio" }, "No hay componentes que coincidan."));
+    if (!n) vacio(main, "buscar", busqueda ? "No hay componentes que coincidan con «" + busqueda + "»." : "No hay componentes en esta categoría.");
   }
 
   function vistaKits(main) {
@@ -61,43 +90,53 @@
       var detalle = h("ul", { class: "items" });
       k.i.forEach(function (i) { detalle.appendChild(h("li", {}, C.cantidad(i.q) + " × " + i.n)); });
       main.appendChild(h("details", { class: "kit" },
-        h("summary", {}, h("span", { class: "nombre" }, k.n), h("span", { class: "precio" }, C.dinero(k.p))),
+        h("summary", {}, h("span", { class: "nombre" }, k.n, h("small", {}, k.i.length + " componentes · tocá para ver")),
+          h("span", { class: "precio" }, C.dinero(k.p)), ico("abajo")),
         detalle, h("div", { class: "pie" }, botonesCantidad(item))));
     });
-    if (!n) main.appendChild(h("p", { class: "vacio" }, "No hay kits publicados."));
+    if (!n) vacio(main, "kit", busqueda ? "No hay kits que coincidan con «" + busqueda + "»." : "No hay kits publicados.");
   }
 
   function copiar(texto, aviso) {
-    function listo(ok) { aviso.textContent = ok ? "Copiado ✔" : "No se pudo copiar: mantené apretado el texto de abajo y copialo."; }
+    function listo(ok) { aviso.textContent = ok ? "Lista copiada ✔" : "No se pudo copiar: abrí «Ver el texto» y copialo a mano."; }
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(texto).then(function () { listo(true); }, function () { listo(false); });
     else listo(false);
   }
 
   function vistaPedido(main) {
     main.appendChild(h("h2", {}, "Mi pedido"));
-    if (!pedido.length) { main.appendChild(h("p", { class: "vacio" }, "Todavía no agregaste nada. Usá el botón + en Precios o en Kits.")); return; }
+    if (!pedido.length) { vacio(main, "pedido", "Todavía no agregaste nada. Tocá + en Precios o en Kits."); return; }
     var lista = h("ul", { class: "lista" });
     pedido.forEach(function (l) {
-      lista.appendChild(h("li", {}, h("span", { class: "nombre" }, l.n), h("span", { class: "precio" }, C.dinero(l.p * l.q)), botonesCantidad(l)));
+      lista.appendChild(h("li", {}, h("span", { class: "nombre" }, l.n, h("small", {}, C.dinero(l.p) + " c/u")),
+        h("span", { class: "precio" }, C.dinero(l.p * l.q)), botonesCantidad(l)));
     });
     main.appendChild(lista);
     var aviso = h("span", { class: "aviso", role: "status" });
     var txt = C.texto(pedido, datos.actualizado);
-    main.appendChild(h("p", { class: "total" }, "Total: ", h("b", {}, C.dinero(C.total(pedido)))));
+    main.appendChild(h("p", { class: "total" }, "Total", h("b", {}, C.dinero(C.total(pedido)))));
     main.appendChild(h("div", { class: "acciones" },
-      h("button", { class: "p", onclick: function () { copiar(txt, aviso); } }, "Copiar lista"),
-      h("button", { onclick: function () { if (confirm("¿Vaciar el pedido?")) { pedido = []; guardarPedido(); dibujar(); } } }, "Vaciar"), aviso));
-    main.appendChild(h("textarea", { readonly: "readonly", rows: String(Math.min(pedido.length + 4, 12)), "aria-label": "Lista para copiar" }, txt));
+      h("a", { class: "boton wa", href: "https://wa.me/?text=" + encodeURIComponent(txt), target: "_blank", rel: "noopener" }, ico("whatsapp"), "Enviar por WhatsApp"),
+      h("button", { class: "boton", type: "button", onclick: function () { copiar(txt, aviso); } }, ico("copiar"), "Copiar lista"),
+      h("button", { class: "boton quitar", type: "button", onclick: function () { if (confirm("¿Vaciar el pedido?")) { pedido = []; guardarPedido(); dibujar(); } } }, ico("borrar"), "Vaciar")));
+    main.appendChild(aviso);
+    main.appendChild(h("details", { class: "copia" }, h("summary", {}, "Ver el texto"),
+      h("textarea", { readonly: "readonly", rows: String(Math.min(pedido.length + 4, 12)), "aria-label": "Lista para copiar" }, txt)));
   }
 
   function dibujar() {
     var main = document.getElementById("main");
     main.textContent = "";
-    var buscador = document.getElementById("busqueda");
-    buscador.hidden = vista === "pedido";
-    if (vista === "precios") vistaPrecios(main); else if (vista === "kits") vistaKits(main); else vistaPedido(main);
-    var n = pedido.reduce(function (s, l) { return s + 1; }, 0);
-    document.getElementById("n-pedido").textContent = n ? " (" + n + ")" : "";
+    document.getElementById("busqueda").hidden = vista === "pedido";
+    document.getElementById("categorias").hidden = vista !== "precios";
+    if (vista === "precios") { dibujarCategorias(); vistaPrecios(main); } else if (vista === "kits") vistaKits(main); else vistaPedido(main);
+    var n = pedido.length, globo = document.getElementById("n-pedido"), resumen = document.getElementById("resumen");
+    globo.textContent = n;
+    globo.hidden = !n;
+    resumen.hidden = !n || vista === "pedido";
+    document.body.classList.toggle("con-resumen", !resumen.hidden);
+    resumen.textContent = "";
+    if (n) resumen.append(ico("pedido"), n === 1 ? "1 ítem en tu pedido" : n + " ítems en tu pedido", h("b", {}, C.dinero(C.total(pedido))));
     ["precios", "kits", "pedido"].forEach(function (v) {
       var a = document.getElementById("tab-" + v);
       a.setAttribute("aria-current", v === vista ? "page" : "false");
@@ -108,19 +147,25 @@
     var v = (location.hash || "#precios").slice(1);
     vista = v === "kits" || v === "pedido" ? v : "precios";
     dibujar();
+    window.scrollTo(0, 0);
   }
 
   function iniciar() {
     cargarPedido();
-    var q = document.getElementById("q");
-    q.addEventListener("input", function () { busqueda = q.value; dibujar(); });
+    var q = document.getElementById("q"), limpiar = document.getElementById("limpiar");
+    q.addEventListener("input", function () { busqueda = q.value; limpiar.hidden = !busqueda; dibujar(); });
+    limpiar.addEventListener("click", function () { q.value = busqueda = ""; limpiar.hidden = true; dibujar(); q.focus(); });
     window.addEventListener("hashchange", leerVista);
     fetch("data.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (d) {
       datos = d;
-      document.getElementById("actualizado").textContent = "Precios al " + d.actualizado + " · sujetos a cambio";
+      document.getElementById("actualizado").textContent = (navigator.onLine === false ? "Sin conexión · precios guardados del " : "Precios al ")
+        + d.actualizado + " · sujetos a cambio";
       leerVista();
     }).catch(function () {
-      document.getElementById("main").textContent = "No se pudieron cargar los precios. Conectate a internet una vez para guardarlos.";
+      document.getElementById("actualizado").textContent = "";
+      var main = document.getElementById("main");
+      main.textContent = "";
+      vacio(main, "alerta", "No se pudieron cargar los precios. Conectate a internet una vez para guardarlos.");
     });
     if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(function () {});
   }
