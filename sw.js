@@ -1,5 +1,5 @@
-// Service worker: la app abre sin conexión. 2b2568dd8b cambia en cada publicación y renueva la caché.
-var VERSION = "2b2568dd8b";
+// Service worker: la app abre sin conexión. b68c1f89d2 cambia en cada publicación y renueva la caché.
+var VERSION = "b68c1f89d2";
 var CACHE = "transistock-" + VERSION;
 var ARCHIVOS = ["./", "index.html", "app.js", "calculo.js", "style.css", "marca.css", "iconos.svg", "manifest.webmanifest", "data.json",
   "isotipo-azul.svg", "favicon.svg", "favicon-32.png", "icon-192.png",
@@ -21,6 +21,8 @@ self.addEventListener("fetch", function (e) {
   if (url.origin !== location.origin) return;
   if (url.pathname.slice(-9) === "data.json") {  // precios: primero la red, y la copia guardada si no hay conexión
     e.respondWith(fetch(e.request).then(function (r) {
+      // un 404/503 (p. ej. durante un despliegue) no reemplaza la copia buena
+      if (!r.ok) return caches.match(e.request).then(function (g) { return g || r; });
       var copia = r.clone();
       caches.open(CACHE).then(function (c) { c.put(e.request, copia); });
       return r;

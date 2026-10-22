@@ -154,6 +154,8 @@
     window.addEventListener("hashchange", leerVista);
     fetch("data.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (d) {
       datos = d;
+      pedido = C.actualizar(pedido, d);
+      guardarPedido();
       document.getElementById("actualizado").textContent = (navigator.onLine === false ? "Sin conexión · precios guardados del " : "Precios al ")
         + d.actualizado + " · sujetos a cambio";
       leerVista();

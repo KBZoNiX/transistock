@@ -45,6 +45,24 @@ var Calculo = (function () {
     l.push("(precios orientativos - a confirmar)");
     return l.join("\n");
   }
+  // Al cargar precios nuevos, cada línea del pedido toma el nombre y el precio de hoy, y se quita lo que ya
+  // no se publica. Se busca por tipo, id y nombre; si no, sólo por nombre (pedidos guardados cuando el id
+  // era la posición en la lista y podía apuntar a otra cosa).
+  function actualizar(pedido, datos) {
+    var actuales = [], out = [];
+    datos.componentes.forEach(function (c) { actuales.push({ t: "c", id: c.id, n: c.n, p: c.p }); });
+    datos.kits.forEach(function (k) { actuales.push({ t: "k", id: k.id, n: "Kit " + k.n, p: k.p }); });
+    for (var i = 0; i < pedido.length; i++) {
+      var l = pedido[i], hallado = null;
+      for (var j = 0; j < actuales.length && !hallado; j++) {
+        var a = actuales[j];
+        if (a.t === l.t && a.id === l.id && a.n === l.n) hallado = a;
+      }
+      for (j = 0; j < actuales.length && !hallado; j++) if (actuales[j].t === l.t && actuales[j].n === l.n) hallado = actuales[j];
+      if (hallado) out = cambiar(out, hallado, l.q);
+    }
+    return out;
+  }
   // normaliza para buscar: sin acentos y en minúsculas
   function plano(s) {
     return s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
@@ -55,6 +73,6 @@ var Calculo = (function () {
     return true;
   }
   return { dinero: dinero, cantidad: cantidad, cambiar: cambiar, fijar: fijar, cantidadDe: cantidadDe,
-           total: total, texto: texto, coincide: coincide };
+           total: total, texto: texto, coincide: coincide, actualizar: actualizar };
 })();
 if (typeof module !== "undefined") module.exports = Calculo;
