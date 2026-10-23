@@ -16,16 +16,36 @@
 </head>
 <body>
 <header class="barra sobre-azul">
-  <div class="fila">
-    <img src="isotipo-azul.svg" alt="" width="36" height="36">
-    <div class="titulo"><h1 class="logotipo">transi<b>stock</b></h1><p>Componentes ESETP 703</p></div>
+  <div id="marca" class="fila" role="button" tabindex="0" aria-label="Acerca de transistock" aria-haspopup="dialog" aria-controls="acerca" aria-expanded="false">
+    <img src="isotipo-azul.svg" alt="" width="36" height="36" data-vuela="iso">
+    <div class="titulo"><h1 class="logotipo" data-vuela="nombre">transi<b>stock</b></h1><p data-vuela="lema">Componentes ESETP 703</p></div>
   </div>
   <div id="busqueda" class="buscar">
     <svg class="ico" aria-hidden="true"><use href="iconos.svg#i-buscar"/></svg>
     <input id="q" type="search" placeholder="Buscar componente o kit" aria-label="Buscar" autocomplete="off">
     <button id="limpiar" type="button" class="limpiar" aria-label="Borrar búsqueda" hidden><svg class="ico" aria-hidden="true"><use href="iconos.svg#i-cerrar"/></svg></button>
   </div>
+  <span class="tirador" aria-hidden="true"></span>
 </header>
+<div id="acerca" class="acerca sobre-azul" role="dialog" aria-modal="true" aria-labelledby="acerca-nombre" hidden>
+  <div class="hoja"></div>
+  <div class="contenido">
+    <img src="isotipo-azul.svg" alt="" width="112" height="112" data-vuela="iso">
+    <h2 id="acerca-nombre" class="logotipo" data-vuela="nombre">transi<b>stock</b></h2>
+    <p class="lema" data-vuela="lema">Componentes ESETP 703</p>
+    <div class="texto">
+      <p>Lista de precios, kits y calculadora de pedido de componentes electrónicos de la ESETP 703, Puerto Madryn.</p>
+      <ol>
+        <li>Buscá un componente o elegí una categoría.</li>
+        <li>Tocá + para sumarlo a tu pedido.</li>
+        <li>En «Mi pedido», mandalo por WhatsApp o copiá la lista.</li>
+      </ol>
+      <p id="acerca-precios" class="chico"></p>
+      <p class="chico">Funciona sin conexión con los últimos precios guardados.</p>
+    </div>
+    <button id="cerrar-acerca" type="button" class="volver"><svg class="ico" aria-hidden="true"><use href="iconos.svg#i-abajo"/></svg>Volver</button>
+  </div>
+</div>
 <p id="actualizado" class="actualizado">Cargando precios…</p>
 <nav id="categorias" class="chips" aria-label="Categorías" hidden></nav>
 <main id="main" aria-live="polite"><noscript>Esta página necesita JavaScript.</noscript>

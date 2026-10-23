@@ -8,10 +8,13 @@ h2, button, .chip, .tabs, .total, summary { font-family:var(--f-ui); font-weight
 .ancho, main, .actualizado { max-width:44rem; margin-left:auto; margin-right:auto; }
 
 /* ---------- barra superior azul ---------- */
-.barra { position:sticky; top:0; z-index:10; background:var(--azul-fuerte); color:#fff; padding:calc(.7rem + env(safe-area-inset-top)) 1rem .8rem;
-  border-radius:0 0 18px 18px; box-shadow:0 2px 10px rgba(0,60,140,.25); }
+.barra { position:sticky; top:0; z-index:10; background:var(--azul-fuerte); color:#fff; padding:calc(.7rem + env(safe-area-inset-top)) 1rem .35rem;
+  border-radius:0 0 18px 18px; box-shadow:0 2px 10px rgba(0,60,140,.25); touch-action:none; user-select:none; -webkit-user-select:none; }
 .barra .fila, .barra .buscar { max-width:42rem; margin:0 auto; }
-.barra .fila { display:flex; align-items:center; gap:.6rem; }
+.barra .fila { display:flex; align-items:center; gap:.6rem; cursor:pointer; -webkit-tap-highlight-color:transparent; }
+.barra .fila:focus-visible { outline-color:#fff; border-radius:8px; }
+.barra .tirador { display:block; width:2.25rem; height:4px; margin:.5rem auto 0; border-radius:2px; background:rgba(255,255,255,.45); }
+.barra.abierta [data-vuela] { visibility:hidden; }  /* las copias del panel ocupan su lugar */
 .barra h1 { margin:0; font-size:1.45rem; line-height:1.1; }
 .barra .titulo p { margin:.1rem 0 0; font:500 .78rem var(--f-ui); color:rgba(255,255,255,.85); }
 .buscar { display:flex; align-items:center; gap:.5rem; margin-top:.7rem !important; background:var(--card); color:var(--mut); border-radius:999px; padding:0 .4rem 0 1rem; }
@@ -20,6 +23,28 @@ h2, button, .chip, .tabs, .total, summary { font-family:var(--f-ui); font-weight
 .buscar .limpiar { border:0; background:none; color:var(--mut); min-width:2.5rem; min-height:2.5rem; }
 .buscar[hidden] { display:none; }
 .actualizado { color:var(--mut); font-size:.8rem; padding:.7rem 1rem 0; margin-top:0; margin-bottom:0; }
+
+/* ---------- acerca de: se despliega tirando la barra hacia abajo ---------- */
+.acerca { position:fixed; inset:0; z-index:20; color:#fff; touch-action:none; user-select:none; -webkit-user-select:none; }
+.acerca[hidden] { display:none; }
+.acerca .hoja { position:absolute; inset:0; background:var(--azul-fuerte); border-radius:0 0 18px 18px; will-change:transform; }
+.acerca .contenido { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+  padding:calc(1.5rem + env(safe-area-inset-top)) 1.5rem calc(1.5rem + env(safe-area-inset-bottom)); overflow:hidden; }
+.acerca [data-vuela] { transform-origin:0 0; will-change:transform; }
+.acerca img { width:clamp(5.5rem, 26vw, 7rem); height:auto; }
+.acerca h2 { display:inline-block; margin:.9rem 0 0; font-size:2.9rem; line-height:1.1; color:#fff; }
+.acerca .lema { display:inline-block; margin:.2rem 0 0; font:500 1.56rem var(--f-ui); color:rgba(255,255,255,.85); }
+.acerca .texto { max-width:24rem; margin-top:1.6rem; font-size:.95rem; color:rgba(255,255,255,.92); }
+.acerca .texto p { margin:.6rem 0; }
+.acerca ol { text-align:left; margin:.9rem 0; padding-left:1.4rem; }
+.acerca ol li { margin:.35rem 0; }
+.acerca .chico { font-size:.82rem; color:rgba(255,255,255,.75); }
+.acerca .volver { display:inline-flex; align-items:center; gap:.4rem; margin-top:1.4rem; min-height:2.75rem; padding:0 1.2rem; border-radius:999px;
+  border:1px solid rgba(255,255,255,.5); background:none; color:#fff; font-size:.95rem; }
+.acerca .volver .ico { transform:rotate(180deg); }
+.acerca .volver:focus-visible { outline-color:#fff; }
+.acerca .texto, .acerca .volver { will-change:opacity; }
+@media (max-height:600px) { .acerca .texto ol, .acerca .chico + .chico { display:none; } }
 
 /* ---------- chips de categoría ---------- */
 .chips { display:flex; gap:.45rem; overflow-x:auto; padding:.7rem 1rem .2rem; max-width:44rem; margin:0 auto; scrollbar-width:none; scroll-snap-type:x proximity; scroll-padding-inline:1rem; }
@@ -90,6 +115,6 @@ textarea { width:100%; font:.85rem/1.4 var(--f-datos); padding:.6rem; border:1px
   font-size:.68rem; line-height:1.15rem; text-align:center; }
 .globo[hidden] { display:none; }
 
-@media (min-width:46rem) { .barra { border-radius:0; } }
+@media (min-width:46rem) { .barra, .acerca .hoja { border-radius:0; } }
 @media (prefers-reduced-motion: reduce) { * { animation:none !important; transition:none !important; } }
-@media print { .tabs, .buscar, .chips, button, .acciones { display:none !important; } .barra { position:static; box-shadow:none; } body { padding:0; } }
+@media print { .acerca, .tirador, .tabs, .buscar, .chips, button, .acciones { display:none !important; } .barra { position:static; box-shadow:none; } body { padding:0; } }
